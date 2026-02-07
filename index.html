@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hayat Seni Sevince Güzel 🌸</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            /* Romantik pembe gradyan */
+            background: radial-gradient(circle at bottom, #fce4ec 0%, #f06292 60%, #880e4f 100%);
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* --- MÜZİK BUTONU --- */
+        #musicBtn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Tam ortala */
+            z-index: 100;
+            padding: 15px 30px;
+            background: #d81b60;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 0 20px rgba(216, 27, 96, 0.6);
+            transition: all 0.5s ease;
+            animation: pulseBtn 2s infinite;
+        }
+
+        #musicBtn:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            background: #ad1457;
+        }
+
+        @keyframes pulseBtn {
+            0% { box-shadow: 0 0 0 0 rgba(216, 27, 96, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(216, 27, 96, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(216, 27, 96, 0); }
+        }
+
+        .garden {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- ÇİÇEK YAPISI --- */
+        .flower-wrapper {
+            position: absolute;
+            bottom: -50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: bottom center;
+            z-index: 10;
+        }
+
+        .stem {
+            width: 10px;
+            height: 0;
+            background: linear-gradient(to right, #558b2f, #7cb342);
+            border-radius: 10px;
+            z-index: 1;
+            position: relative;
+            animation: growStem 2.5s ease-out forwards;
+        }
+
+        .leaf {
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            background: #4caf50;
+            border-radius: 0 50px 0 50px;
+            opacity: 0;
+            animation: showLeaf 1s ease-out 1.5s forwards;
+        }
+        .leaf.left { left: -55px; transform: rotate(-30deg); }
+        .leaf.right { right: -55px; transform: rotate(30deg) scaleX(-1); }
+
+        .lily-head {
+            position: relative;
+            width: 0;
+            height: 0;
+            z-index: 10;
+            bottom: -5px; 
+        }
+
+        .petal {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 50px;
+            height: 140px;
+            background: linear-gradient(to top, #ec407a, #f8bbd0);
+            border-radius: 50% 50% 50% 50% / 80% 80% 20% 20%;
+            transform-origin: bottom center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            margin-left: -25px;
+            animation: bloomPetal 2s ease-out forwards;
+        }
+
+        .p1 { transform: rotate(0deg); animation-delay: 2s; }
+        .p2 { transform: rotate(60deg); animation-delay: 2.1s; }
+        .p3 { transform: rotate(120deg); animation-delay: 2.2s; }
+        .p4 { transform: rotate(180deg); animation-delay: 2.3s; z-index: 5; }
+        .p5 { transform: rotate(240deg); animation-delay: 2.4s; }
+        .p6 { transform: rotate(300deg); animation-delay: 2.5s; }
+
+        .center {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #ffeb3b;
+            border-radius: 50%;
+            z-index: 20;
+            top: -15px;
+            left: -15px;
+            transform: scale(0);
+            animation: showCenter 0.5s ease-out 3s forwards;
+        }
+
+        .stamen {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            height: 50px;
+            background: #fff;
+            transform-origin: bottom center;
+            z-index: 15;
+            opacity: 0;
+            margin-left: -1px;
+            animation: showStamen 0.5s ease-out 3.2s forwards;
+        }
+
+        .stamen::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -3px;
+            width: 8px;
+            height: 10px;
+            background: #880e4f;
+            border-radius: 50%;
+        }
+
+        @keyframes growStem { to { height: 350px; } }
+        @keyframes showLeaf { to { opacity: 1; } }
+        @keyframes bloomPetal {
+            0% { opacity: 0; transform: rotate(var(--rot)) scale(0.1); }
+            100% { opacity: 1; transform: rotate(var(--rot)) translateY(-15px) scale(1); }
+        }
+        @keyframes showCenter { to { transform: scale(1); } }
+        @keyframes showStamen { to { opacity: 1; height: 60px; } }
+
+        .sway { animation: swayAnim 5s ease-in-out infinite alternate; }
+        @keyframes swayAnim { from { transform: rotate(-2deg); } to { transform: rotate(2deg); } }
+
+        /* Başlangıçta gizli olacak */
+        .hidden { display: none; }
+
+    </style>
+</head>
+<body>
+
+    <button id="musicBtn">🎶 Bana Ellerini Ver...</button>
+    
+    <audio id="bgMusic" loop>
+        <source src="hayat.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="garden hidden" id="garden"></div>
+
+<script>
+    const musicBtn = document.getElementById('musicBtn');
+    const bgMusic = document.getElementById('bgMusic');
+    const garden = document.getElementById('garden');
+    const flowerCount = 10; // Zambak sayısı
+
+    musicBtn.addEventListener('click', function() {
+        // Müziği başlat
+        bgMusic.volume = 0.5; // Ses seviyesi %50
+        bgMusic.play().then(() => {
+            // Butonu gizle, bahçeyi göster
+            musicBtn.style.display = 'none';
+            garden.classList.remove('hidden');
+            
+            // Çiçekleri oluşturmaya başla
+            startGarden();
+        }).catch(error => {
+            alert("Müzik dosyası (hayat.mp3) bulunamadı! Dosyayı yüklediğinden emin ol.");
+            console.log(error);
+        });
+    });
+
+    function startGarden() {
+        for (let i = 0; i < flowerCount; i++) {
+            setTimeout(() => {
+                createLily(i);
+            }, i * 300); // Her çiçek 300ms arayla çıksın
+        }
+    }
+
+    function createLily(index) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'flower-wrapper sway';
+        
+        const randomLeft = Math.floor(Math.random() * 90) + 5;
+        const scale = 0.6 + Math.random() * 0.7; // Boyut çeşitliliği
+        const zIndex = Math.floor(scale * 10);
+
+        wrapper.style.left = randomLeft + '%';
+        wrapper.style.transform = `scale(${scale})`;
+        wrapper.style.zIndex = zIndex;
+
+        let htmlContent = `
+            <div class="lily-head">
+                <div class="petal p1" style="--rot: 0deg"></div>
+                <div class="petal p2" style="--rot: 60deg"></div>
+                <div class="petal p3" style="--rot: 120deg"></div>
+                <div class="petal p4" style="--rot: 180deg"></div>
+                <div class="petal p5" style="--rot: 240deg"></div>
+                <div class="petal p6" style="--rot: 300deg"></div>
+                <div class="center"></div>
+        `;
+
+        // 8 Polenli Yapı
+        for(let s=0; s<8; s++) {
+            const rot = s * (360 / 8);
+            htmlContent += `<div class="stamen" style="transform: rotate(${rot}deg)"></div>`;
+        }
+
+        htmlContent += `</div>
+            <div class="stem">
+                <div class="leaf left" style="bottom: ${100 + Math.random()*50}px"></div>
+                <div class="leaf right" style="bottom: ${180 + Math.random()*50}px"></div>
+            </div>
+        `;
+
+        wrapper.innerHTML = htmlContent;
+        garden.appendChild(wrapper);
+    }
+</script>
+
+</body>
+</html>
